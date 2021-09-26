@@ -1,14 +1,11 @@
 ### Naver Cloud Platform 의 NCA, NCP 시험준비를 위한 내용 정리
 
-항목에 대한 소개와 시험에 나올법한 내용들(제한 사항이라던지 등등)이라고 생각되는 내용들만 정리
-
-따라서 사용 가이드는 한번 전체적으로 읽을것을 권장함.
-
-사용 가이드 : https://guide.ncloud-docs.com/docs/home
-
-NCA시험은 Overview, Compute, Storage, Database, Network, Media
-
-NCP추가항목 : Management, Analytics, Troubleshooting
+- 항목에 대한 소개와 시험에 나올법한 내용들(제한 사항이라던지 등등)이라고 생각되는 내용들만 정리
+- 따라서 별도로 사용 가이드는 한번 전체적으로 읽을 것을 권장함.
+- Classic이라고 명시된 부분은 적지 않음
+- 사용 가이드 : https://guide.ncloud-docs.com/docs/home
+- NCA시험은 Overview, Compute, Storage, Database, Network, Media
+- NCP추가항목 : Management, Analytics, Troubleshooting
 
 ## Overview
 
@@ -79,41 +76,125 @@ NCP추가항목 : Management, Analytics, Troubleshooting
 
     - ### 서버 생성
 
+      - NCP는 HA구조를 제공, Live Migration 지원(불가할경우 VM서버 리붓)
+
+      - VM 1대 운영이렴 다중화 하는 것을 권장
+
+      - 서버생성
+
+        - 생성 방법 설명 -> 보지말고 그냥 실습해보는게 좋음
+        - 콘솔 접속 > 이미지 생성 . 서버 설정 > 인증키 설정 > 네트워크 접근 설정 > 최종 확인
+        - OS와 상관없이 인증키는 *.pem 확장자로 저장
+
+        
+
     - ### 서버 정지 및 반납
+
+      - 이것도 실습 권장
+      - 서버 정지 > 스토리지 반납 > 서버 반납
+      - 스토리지 반납은 
+        - 추가한 경우에만 없을 경우 바로 서버 반납
+        - 서버에서 연겨을 해제 한 후에 반납처리
 
   - ### Bare Metal Server
 
     - ### Bare Metal Server 개요
 
+      - 물리서버를 가상화 환경 없이 단독 제공, 대규모 입출력이 발생하거나 빠른 입출력이 필요한 경우
+      - 시간 요금제로만 청구
+      - 이점 : 고성능, 다양한 스펙, 손쉬운 생성과 구성 변경
+      - 타입별 주요 기능 비교표
+        ![image-20210926185452800](https://raw.githubusercontent.com/redplug/shareimages/master/img/image-20210926185452800.png)
+
     - ### 서버 생성
 
+      - 가상서버와 동일함
+
     - ### 서버 정지 및 반납
+
+      - 가상 서버와 크게 다르지 않음
 
 - ### 접속 환경 설정
 
   - ### 공인 IP 사용 가이드
 
+    - 고객이 지정한 서버에 공인 IP 할당해주는 서버
+    - VPC환경에서는 Internet Gateway가 설정된 Subnet의 서버만 연결 가능
+    - 공인 아이피는 리전별로 리전 내 생성된 서버 수와 동일하게 제공
+    - 생성이 불가할 경우 다른 Zone에 사용하지 않는 공인 IP삭제 후 생성
+    - 공인IP 할당 서버 변경가능, 변경 시 공인IP가 위치한 Zone과 서버가 위치한 Zone이 동일 해야 함
+    - 할당 방법은 실습 해볼 것
+
   - ### 포트 포워딩 이용 가이드
 
+    - 포트포워딩 : 비공인 아이피를 가진 서버에 공인 IP의 포트를 통해 접속 하는것
+    - 포트 포워딩은 서버 접속 용도로만 사용 가능하며, 서비스 목적의 포트 연결은 공인 IP를 사용해주세요.
+    - Server, Bare Metal Server에서 공인 IP와 포트 포워딩을 동시에 사용하면 22(Linux), 3389(Windows) 포트가 포트 포워딩에 먼저 할당됨에 따라 공인 IP에서 해당 포트 사용이 불가해집니다. 공인 IP에서 22, 3389 포트를 사용하려면 해당 서버의 포트 포워딩 설정을 삭제해주세요.
+    - 이것도 실습 해보면 쉽게 알듯
+
   - ### ACG 사용 가이드
+
+    - Access Control Group, 서버간 네트워크 접근 제어 및 관리를 할수 있는 IP/Port 기반 필터링 방화벽 서비스
+
+    - VPC 환경 기준 제한사항
+
+      - VPC당 최대 500개까지의 ACG를 생성할 수 있습니다.
+      - NIC당 3개의 ACG를 허용합니다.
+      - Inbound / Outbound 각각 50개의 ACG 규칙을 생성할 수 있습니다.
+
+    - Default ACG, Custom ACG
+      ![image-20210926190305072](https://raw.githubusercontent.com/redplug/shareimages/master/img/image-20210926190305072.png)
+
+    - ACG 규칙 설정
+
+      - 네이버 클라우드 플랫폼 2.0은 기본적으로 서버에 모든 들어오는 연결(inbound traffic)을 차단, 모든 나가는 연결(outbound traffic)을 허용합니다.
+        ACG에 적용한 모든 규칙들은 ACG 내 속하는 서버에 대해 들어오는 연결(inbound traffic)을 허용합니다.
+        규칙에는 네트워크 프로토콜, 접근소스, 포트 설정이 가능합니다. 자세한 내용은 아래 표를 참고하세요.
+        ![image-20210926190343701](https://raw.githubusercontent.com/redplug/shareimages/master/img/image-20210926190343701.png)
+
+      
 
 - ### 서버 접속
 
   - ### 리눅스 서버 접속 가이드
 
+    - ssh key 인증서 접속을 위해서는 서버에 ~/.ssh/authorized_keys 위치에 공개키 내용 추가 필요
+    - 실습해보는게 빠름
+
   - ### 윈도우 서버 접속 가이드
+
+    - 실습이 빠름
 
 - ### 스토리지 추가
 
   - ### 스토리지 추가 가이드
 
+    - HDD, SSD 스토리지 제공
+    - Micro 타입의 서버, Bare Metal 서버는 스토리지를 추가할 수 없습니다.
+    - 개당 최대 2000GB지원, 서버 한대당 최대 16개 스토리지(부팅포함)
+    - 삭제 시 마운트 해제 하고 해야 함.
+      - linux의 경우 스토리지를 삭제(또는 연결 해제)한 후 반드시 스토리지의 마운트 정보를 /etc/fstab에서 삭제해야 합니다. 마운트 정보가 남아있으면 서버가 재부팅될 때 디스크 인식 실패로 정상적으로 부팅되지 않을 수 있습니다.
+    - Q. 이용 중인 스토리지를 다른 서버로 옮길 수 있나요?
+      - 최신 서버에 연결된 스토리지에 한해, 가능합니다.
+      - Compact, Standard, High Memory, VDS, GPU 서버 타입에 대해 지원합니다.(Micro, Bare Metal Server 지원 안 함) 
+
 - ### 스토리지 크기 변경
 
   - ### 스토리지 크기 변경 가이드
 
+    - 연결된 디스크일 경우 서버 정지상태에서 가능
+    - 디스크 한개당 2TB, 변경전보다 크게만 가능
+    - SSD의 경우 1GB당 40 IOPS씩 증가 (4000이 최소, 최대 24000인가(?)까지임)
+
 - ### 내 서버 이미지
 
   - ### 내 서버 이미지 사용 가이드
+
+    - 현재 사용중인 서버의 이미지를 생성하는 기능, 서버의 현재상태 저장
+    - 서버가 정지 혹은 운영중인 상태에서만 생성 가능 (클래식은 정지상태에서만 가능)
+    - 50GB당 약 30분 소요, 추가 디스크가 있고 불필요한 경우 분리 후 작업 하면 좋음
+    - 다른 리전으로 복제 기능 있음.
+    - 내 서버이미지 생성 시 다른 타입의 서버로 스펙 변경 가능
 
 - ### 서버 이미지 빌더
 
