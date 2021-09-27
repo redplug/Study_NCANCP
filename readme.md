@@ -1,7 +1,7 @@
 ### Naver Cloud Platform 의 NCA, NCP 시험준비를 위한 내용 정리
 
 - 항목에 대한 소개와 시험에 나올법한 내용들(제한 사항이라던지 등등)이라고 생각되는 내용들만 정리
-- 따라서 별도로 사용 가이드는 한번 전체적으로 읽을 것을 권장함.
+- 따라서 별도로 사용 가이드는 한번 전체적으로 읽을 것을 권장함
 - Classic이라고 명시된 부분은 적지 않음
 - 사용 가이드 : https://guide.ncloud-docs.com/docs/home
 - NCA시험은 Overview, Compute, Storage, Database, Network, Media
