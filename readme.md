@@ -200,65 +200,181 @@
 
   - ### 서버 이미지 빌더 사용 가이드
 
+    - 클래식만 사용 가능
+    - 스크립트 기반으로 내가 원하는 이미지 만드는 빌더, 오픈소스 Packer를 활용
+    - 2008을 제외한 모든 이미지 이용 가능
+    - 빌드 시 서버가 만들어지고 반납되어 비용 발생, 스토리지 사용에 대한 요금 별도
+    - 인증키가 있어야 함.
+    - 생성시간은 50GB당 30분 소요
+    - 실습은 별도로
+
 - ### 스토리지 스냅샷
 
   - ### 스토리지 스냅샷 사용 가이드
+
+    - 스냅샷 사진 찍듯이 특정 시점의 스토리지 데이터를 저장하고, 저장된 데이터가 필요할 때 새로운 디스크의 형태로 복구할 수 있는 기능
+    - 다른 리젼 복제 가능
+    - VPC환경에서 증분 스냅샷 생성 가능 최대 7개
+    - 증분 스냅샷 제한 사항
+      - 2021년 1월 21 이전에 전체 스토리지 스냅샷으로 증분 스냅샷을 생성하는 경우
+      - 스토리지를 서버로부터 Attach.Detach 하는 경우
+      - 스토리지 용량을 변경 하는 경우
+      - 증분 스냅샷이 삭제되는 경우 -> 전체 스토리지 스냅샷 새로 생성 필요
+    - 가장 최근에 생성한 전체 스토리지 스냅샷을 기준으로만 증분 스냅샷 가능
+    - 스냅샷 스토리지 부팅오류 방지 가이드(리눅스만 해당)
+      - 부팅용 사용하던거 걸 붙일 경우에 발생할 수 있음
+      - 추가 스토리지의 식별자를 변경 하면됨
+      - **CentOS 5.x는 스토리지를 라벨(LABEL)로 식별하고, CentOS 6.x 이상과 Ubuntu 12,x 이상은 스토리지를 UUID로 식별합니다.**
+      - CentOS 5.x tune2fs 로 '/'이 아닌 다른 라벨을 붙인다
+      - CentOS 6.x, Ubuntu 12.x, 14.x 는 tune2fs로 UUID 수정
+      - UUID는 uuidgen으로 새로 생성 할 수 있음.
 
 - ### Ncloud Tool Kit(NTK)
 
   - ### NCloud Tool Kit 사용 가이드
 
+    - Ncloud에서 제공하는 Linux 서버 상태 진단 툴
+    - 쉘 접근하여 설치 필요
+    - 이건 안나올것 같음.
+
 - ### Private Subnet
 
   - ### Private Subnet 사용 가이드
+
+    - 서버들간 내부 통신을 할 수 있는 독립된 가상 네트워크 환경
+    - 존당 1개 생성 가능
+    - 192.168.0.0/16내에서 /24단위로 생성 가능
+    - NIC와 함께 사용 필요
 
 - ### Network Interface
 
   - ### Network Interface 사용 가이드
 
+    - NIC 추가 생성 서비스
+    - Private Subnet를 먼저 신청해야 사용 가능
+    - eth1번 사용 (Bare Metal은 eth3)
+    - Flow log : 네트워크 모니터링에서 로그 수집목적으로 사용하는 log
+
   - ### Secondary IP 사용 가이드 (VPC)
+
+    - VPC 환경
+    - HA솔루션 등에 활용하기 위한 보조 IP
+    - NIC는 최대 5개 가능
+    - ACG는 최대 3개
 
 - ### Init Script
 
   - ### Init Script 사용 가이드
 
+    - 서버 생성 시 자동 실행 스크립트, 최초1회만 실행
+    - 리눅스 : Python, Perl, Shell 스크립트
+    - 윈도우 : Visual Basic 스크립트
+    - 언제 사용? 
+      - 같은 용도 서버를 여러 대 일괄로 생성하는 경우 : 사용자 스크립트 생성 후 여러 서버 생성 시 해당 스크립트 일괄 적용합니다.
+      - 동일한 환경의 서버를 주기적으로 생성하는 경우 : 사용자 스크립트를 생성하고 저장한 후, 서버 생성 시 해당 스크립트 선택 적용합니다.
+      - 용도별로 서버 초기 환경 관리가 필요한 경우 : 용도별로 다양한 스크립트를 생성하고 저장한 후, 서버 생성 시 필요에 따라 선택하여 사용합니다.
+    - 설치 완료 여부 로깅 파일 위치
+      - Linux는 /var/log/ncloud-init.log
+      - Windows는 C:\Program Files(X86)\NBP\ncloud-init\logs를 참고하면 됩니다.
+        
+
 - ### Auto Scaling
 
   - ### Auto Scaling 개요
 
+    - 미리 정한 조건에 따라 가상 서버수를 증가 또는 감소 시켜주는 서비스(Scale in/out)
+    - 유형
+      - 서버 그룹 모니터링
+      - 스케쥴링
+      - 매뉴얼
+    - 서비스 제한 사항
+      - 총 디스크 사이즈 150GB 이하 서버만 가능
+      - Windows OS는 Windows 2012. 2016만 지원
+      - Micro 서버는 불가
+      - High Memory 서버는 불가(추후 개선 예정)
+      - Local disk 기반 서버는 불가
+    - 설정 제한 사항
+      - 고객별 생성 가능한 Auto Scaling Group 최대 수: 100
+      - 고객별 생성 가능한 Launch Configuration 최대 수: 100
+      - Auto Scaling Group당 생성 가능한 스케줄(Scheduled Action) 최대 수: 100
+      - Auto Scaling Group당 생성 가능한 Scaling Policy 최대 수: 10
+      - Auto Scaling Group당 생성 가능한 최대 서버 수: 30대
+      - Auto Scaling Group당 연결 가능한 Load Balancer 최대 수 : 10
+    - Launch Configuration : 오토스케일 대상 서버 그룹에 대한 설정 (템플릿)
+    - Auto Scaling Group : 증가/감소량, 쿨다운, 스케일링에 대한 설정
+    - 
+
   - ### Auto Scaling 사용 가이드
+
+    - 이벤트 룰 : 증가/감소 시킬 조건 정의 할 수 있는거
 
   - ### Auto Scaling 부가 기능
 
+    - 별거 없음
+
   - ### Auto Scaling 관리
 
-  - ### Auto Scaling 권한 관리
+    - 내서버 이미지 + Init Sciprt 생성 지원
+    - 쿨다운 기본 값 : 서비스 수행 하기 까지 기다려주는 시간
+      헬스체크 보류 기간도 비슷한 목적이라고 보면됨
+
+  - ### Sub Account 권한 관리
+
+    - 이건 외워야 될꺼 같은데 불가해보임.
 
 - ### Cloud Functions
 
   - ### Cloud Functions 사용 가이드
 
+    - 사용자의 인프라 관리 부담없이 원하는 로직을 분산된 클라우드 환경에서 동작하고 결과를 반환합니다.
+    - 서버리스 컴퓨팅, 서버 컴퓨팅 파워 없이, 코드만 짜고 실행 조건만 가지고 사용하는거라고 보면됨.
+
   - ### Action 사용 가이드
 
     - ### Package, Action 사용 가이드
 
+      - 액션 : 사용자가 정의하는 상태 비저장(Stateless) 코드의 코드 조각(Snippets)으로, 다양한 언어로 작성될 수 있습니다.
+      - 액션의 Input과 Output은 모두 키-값(key-value) 형태의 JSON 값
+      - Sequence 액션 : 여러개 액션을 모음
+      - 지원 언어
+        - Node.js 6, 8, 12
+        - Python 3.6, 3.7
+        - Java 8
+        - Swift 3.1.1
+        - PHP 7.1, 7.3
+        - Go 1.1
+        - .Net Core 2.2
+        - Ruby (추후 지원)
+      - 액션 컨테이너 : 액션 실행을 위해 생성되는 공간이라고 생각하면됨
+        - pre-warming를 통해 미리 액션 컨테이너 구동 가능
+      - 액션 실행 결과
+        - **`namespace`**: 액션이 속한 namespace. 사용자와의 계약에 의해 할당된 고유 공간입니다. 계약 종료 후 재계약 시에는 다른 namespace를 할당받습니다.
+        - **`name`**: 액션의 이름
+        - **`activationId`**: 액션 실행 결과의 고유 ID
+        - **`start`**: 액션이 시작된 시간
+        - **`end`**: 액션이 종료된 시간
+        - **`duration`**: 액션이 실행된 기간(ms)
+        - **`response`**: 액션의 실행 결과. 액션이 최종 반환한 결과는 `result` 필드로 전달됩니다.
+        - **`logs`**: 사용자가 액션 내에서 출력한 로그
+        - **`annotations`**: 액션과 관련된 정보
+        - **`publish`**: 액션이 공유되었는지 여부
+      - result옵션 : result에 해당 하는 정보만 반환
+      - 액션 로그 남기기 : stout, sterr
+
     - ### Sequence Action
 
-    - ### Node.js
+      - 선행 액션의 리턴한 결과 JSON 값을 후행 액션 파라미터값으로 전달받음
+      - 사용자 액션 파라미터는 첫번째 액션에서만 전달
+      - 
 
-    - ### Python
+    - ### Node.js, Python, Java, Swift, PHP, .Net, Go
 
-    - ### Java
-
-    - ### Swift
-
-    - ### PHP
-
-    - ### .Net
-
-    - ### Go
+      - 코드설명이라 안나올듯
 
     - ### VPC 리소스 연결 가이드
+
+      - KR-2 제한
+      - Private Subnet 제한, 인터넷 통신을 하기 위해서는 NAT Gateway 설정 필요
 
   - ### Trigger 사용하기
 
