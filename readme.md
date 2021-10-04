@@ -846,6 +846,17 @@
 
     - ### MySQL 서버 이미지 사용 가이드
 
+      - "MySQL"은 세계에서 가장 많이 쓰이는 오픈 소스 관계형 데이터베이스(RDBMS)인 MySQL을 이용
+      - 외부 접속 허용
+        - 계정 권한 부여 : GRANT ALL PRIVILEGES ON *.* to '계정명'@'%' IDENTIFIED BY '비밀번호';
+        - sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+          - bind-address 주석 처리
+          - mysql 재시작
+      - SQLSTATUS
+        - 네이버클라우드에서 제공하는 MySQL 서비스에는 CLI(Command Line Interface) 형태의 모니터링 프로그램
+        - MySQL의 내부 Status를 1초 단위로 볼 수 있도록 Binary 형태로 제공
+        - 1초간의 MySQL Status를 Display를 하여 Real-Time으로 DB의 상태 변화를 볼 수 있습니다.
+
   - ### MSSQL
 
     - ### MSSQL 서버 이미지 사용 가이드
@@ -854,19 +865,37 @@
 
     - ### MSSQL Log Collector (Lazylog) 사용 가이드
 
+      - MSSQL 로그 수집기(LazyLog) 
+        - SQL 서버 운영 시 모니터링 대상 서버의 설정이나, 프로그램의 쿼리 성능, 서버의 이벤트 로그, 성능 카운터의 베이스라인을 수집해 두는 것은 매우 중요합니다.
+          이러한 베이스라인 데이터가 없다면 현재 서비스가 정상인지 (어제와 다른지) 판단에 오랜 시간이 걸릴 수 있습니다. 이에 네이버클라우드에서는 SQL 서버 로그 수집 프로그램을 배포하고 있으며, 수집된 데이터는 장애 분석이나 성능 분석용 필수 데이터(**윈도우 성능카운터, 윈도우 이벤트로그, SQL 에러로그 Agent 로그, 쿼리 구문, 쿼리 실행계획, 대기, 잠금 등 필수 DMV 스냅샷**)입니다.
+        - **그 수집 콘솔 응용 프로그램(LazyLog)은 SQL Server 2008, 2012, 2014, 2016을 지원**
+
     - ### MSSQL Log Collector (Lazylog) 다운로드
 
   - ### CUBRID
 
     - ### CUBRID 서버 이미지 사용 가이드
 
+      - 국내 유일 Open Source DBMS(Database Management System:이하 DBMS)로서, 데이터베이스 서버, 브로커, CUBRID 매니저로 구성됩니다.
+        데이터베이스 서버는 다른 DMBS와 마찬가지로 Table, Column단위의 구조를 사용하여 Record단위의 데이터를 조회/변경/추가/삭제를 합니다.
+        브로커는 서버와 외부 응용 프로그램 간의 통신을 중계하는 CUBRID 전용 미들웨어로서, 커넥션 풀링, 모니터링, 로그 추적 및 분석 기능을 제공합니다.
+        CUBRID Manager(이하 CM)는 데이터베이스와 브로커를 원격에서 관리할 수 있는 GUI 툴입니다. 또한, CUBRID 매니저는 사용자가 데이터베이스 서버에 SQL 질의를 수행할 수 있는 편리한 기능의 질의 편집기를 제공합니다.
+
+        CUBRID는 2008년 11월 CUBRID 2008 R1.0 버전 출시를 시작으로, 2014년 9.3 버전을 출시했으며 계속해서 발전되고 있습니다. 네이버클라우드에서 제공하는 CUBRID 설치형 서비스에는 안정성이 검증된 CUBRID 9.2 버전을 지원합니다.
+
   - ### REDIS
 
     - ### REDIS 서버 이미지 사용 가이드
 
+      - Redis(Remote Dictionary Server)는 Open Source 기반의 in memory data structure store
+      - String, hashes, lists, sets, sorted sets과 같은 data structure를 제공하며 관계형 데이터베이스 시스템(Relational Database Management System:이하 RDBMS)이 아닌 key/value의 형태로 Data
+      - 네이버클라우드에서는 Redis 4.0 버전을 제공하며 Basic Install수준의 기 설치된 이미지를 지원
+
   - ### Tibero
 
     - ### Tibero 사용 가이드
+
+      - 차별화된 아키텍쳐와 다양한 기능이 반영된 DBMS인 Tibero를 Server 설치형
 
   - ### Cloud DB for MySQL
 
@@ -874,19 +903,51 @@
 
     - ### DB 서버 생성 및 접근 가이드
 
+      - CloudDB for MySQL은 MySQL 데이터베이스를 몇 가지 설정과 클릭만으로 간편하게 구축하고, 네이버의 최적화 설정을 통해 안정적으로 운영하며, 장애가 발생하면 자동 복구하는 완전 관리형 클라우드 데이터베이스 서비스
+      - 어떤 서비스에서 DB를 사용하고 사용량이 얼마나 될지를 미리 예측하여, 어떤 서버 타입으로 생성할지 미리 결정하셔야 합니다.
+      - 또한 고가용성 여부에 따라 장애 자동 복구와 백업 여부가 변경되므로 역시 신중한 고려가 필요합니다.
+      - 몇대가 생성되는가?
+        - 기본2대(Active + Standby), 스탠드 얼론 1대
+      - 제약사항
+        - 동일 타입내 스펙 변경 가능
+        - 하나의 DB서비스내 동일 스펙만 가능
+        - 스펙 변경은 DB재시작 필요
+      - 기본 디스크 50GB, 용량 변경 불가, CentOS 7.8 설치
+      - 데이터 스토리지
+        - 10GB부터 10GB단위로 6000GB까지 자동 증가
+        - HDD or SSD 선택 가능
+      - 스토리지 엔진 : InnoDB 스토리지 엔진과 Memory 엔진만 지원
+
     - ### DB 서버 상세 보기 및 설정 가이드
+
+      - Slave는 10개까지 생성 가능
 
     - ### Monitoring 사용 가이드
 
+      - 최근 60일 이내 모니터링 지표 확인가능
+      -  Query Timeline은 72시간 이내 지표 확인 가능
+      - 
+
     - ### Backup 사용 가이드
 
+      - 하루에 한번 매일 실행, 최대 30일 보관
+      - 자동으로 설정할 경우 임의의 시간이 선택되며, 이후 매일 해당시간에 백업이 시작됩니다.
+      - 사용자 정의로 시간을 설정한 경우 사용자가 설정한 시간에 시작됩니다.
+
     - ### Event 사용 가이드
+
+      - Cloud DB for MySQL 서버에서 발생한 이벤트 이력을 확인
 
     - ### phpMyAdmin 설치 및 사용 가이드
 
     - ### DB 서버 로드밸런서 설정 가이드
 
+      - Cloud DB for MySQL에서 로드밸런서는 한대 이상의 Slave DB 서버를 로드밸런서로 묶어 읽기 부하 분산을 하기 위해 사용합니다.
+
     - ### DB 서버 외부 접근 가이드
+
+      - SL VPN 상품을 사용하면, 개인 PC에 SSL VPN Client를 설치하여 DB Server로 접근
+      - Public 도메인을 사용하면 네이버 클라우드 플랫폼 외부에서도 DB Server로 접근
 
     - ### Sub Account 권한 관리 (VPC)
 
@@ -895,6 +956,21 @@
     - ### 퀵스타트 가이드
 
     - ### Redis 서버 생성 및 접근 가이드
+
+      - 원활한 Cloud DB for Redis 서비스 운영을 위해 아래 명령어들은 사용할 수 없습니다.
+
+        일부 명령어들에 대해서는 API를 지원할 예정입니다.
+
+        - BGREWIRTEAOF
+        - BGSAVE
+        - SAVE
+        - SLAVEOF
+        - FLUSHALL
+        - FLUSHDB
+        - CONFIG
+        - KEYS
+        - MIGRATE
+        - SHUTDOWN
 
     - ### Monitoring 사용 가이드
 
@@ -919,6 +995,18 @@
     - ### DB 서버 상세 보기 및 설정 가이드
 
     - ### COnfig Group 설정 및 사용 가이드
+
+      - **Q. DB Config Group이 무엇인가요?**
+
+        - Cloud DB 상품의 서비스 특성에 맞게 sp_configure와 trace flag를 변경해 Config Group을 생성할 수 있습니다. 생성된 Config Group은 여러 Cloud DB 서비스에 적용이 가능합니다.
+        - MSSQL 설치 기본값이 포함된 Config Group이 기본 제공됩니다.
+
+        **Q. Config Group 화면에서 수행 가능한 작업에는 어떤 것이 있나요?**
+
+        - Cloud DB 서비스에 적용 가능한 Config Group을 생성, 변경, 삭제할 수 있습니다.
+          - Config Group 변경 : Config Group을 이미 적용한 Cloud DB 서비스가 있다면 해당 DB 서버들도 변경 적용되며, 재시작이 필요한 변경은 Cloud DB 서버 재시작 후에 적용됩니다.
+          - Config Group 삭제 : 삭제하려는 Config Group이 적용된 서버가 있을 경우, 삭제되지 않습니다.
+          - 기본 제공되는 Config Group은 변경 및 삭제할 수 없습니다.
 
     - ### Monitoring 사용 가이드
 
@@ -956,22 +1044,45 @@
 
     - ### PostgreSQl 서버 이미지 사용 가이드
 
+      - 원하는 CentOS 버전에 PostgreSQL을 몇 가지 설정과 클릭만으로 간편하게 구축할 수 있는 Basic Install 기능만을 지원하는 상품
+      - "PostgreSQL"은 확장 가능성 및 표준준수를 강조하는 오픈소스 객체-관계형 데이터베이스(ORDBMS)인 PostgreSQL을 이용
+      - 제공 타입
+        ![image-20211004102958818](https://raw.githubusercontent.com/redplug/shareimages/master/img/image-20211004102958818.png)
+      - 리눅스, 50GB 제공
+
   - ### MariaDB
 
     - ### MariaDB 사용 가이드
+
+      - "MariaDB"는 MySQL과 동일한 소스코드를 기반으로 한 오픈소스 관계형 데이터베이스(RDBMS)인 MariaDB를 이용
+      -  **DB 설치 이외 부분에 대해서는 기술 지원하지 않고 있습니다**.
 
   - ### MongoDB
 
     - ### MongoDB 서버 이미지 사용 가이드
 
+      - MongoDB는 전세계에서 가장 인기 있고 많이 사용하고 있는 OpenSource 기반의 Document Store Database
+      - MongoDB는 MySQL과 같은 RDBMS의 특성과, 일반적인 NoSQL 특성을 다 가지고 있는 DBMS
+    
     - ### MongoDB 사용하기 전에 Linux OS 설정하기
-
+    
     - ### MongoDB Cluster 구성하기
-
+    
+      - 3대 이상의 Member로 구성
+    
+      - Member Role(Primary, Secondary, Arbiter)
+    
+      - 각각의 role에 따라 Replica Set 구성에 차이가 있을 수 있는데 주로 3개의 Member에 대하여 P-S-A(Primary-Secondary-Arbiter) 혹은 P-S-S(Primary-Secondary-Secondary) 구성이 일반적입니다.
+        ![image-20211004103221133](https://raw.githubusercontent.com/redplug/shareimages/master/img/image-20211004103221133.png)
+    
+      - 만일 사용하고자 할 mongodb에서 처리해야 할 데이터량이 많아 분산 처리가 필요할 경우 등 하나의 replica Set만으로는 운영에 어려움이 있을 경우 mongodb에서 제공하는 ‘Sharding’ 기능을 사용할 수 있습니다.
+    
+        Sharding 기능을 이용하여 다수의 replica set을 분산 구성한 형태를 “Sharded Cluster”라고 부르며 이는 MongoDB의 핵심 기능 중 하나입니다.
+    
     - ### Public IP 기능 사용하여 외부와 연동하기
-
+    
     - ### Compass로 MongoDB 관리하기
-
+    
     - ### CLI로 MongoDB 모니터링하기
 
   ## Network
@@ -979,6 +1090,17 @@
   - ### VPC
 
     - ### VPC 개요
+
+      - VPC(Virtual Private Cloud)는 퍼블릭 클라우드 상에서 제공되는 고객 전용 사설 네트워크를 의미합니다.
+      - 계정마다 VPC 최대 3개
+      - 각 VPC 최대 넷마스크 
+      - `0.0.255.255/16` (IP 65,536개) 크기의 네트워크 주소 공간을 제공
+      - Subnet(Subnet)은 VPC 네트워크 공간을 세분화하여 사용할 수 있는 기능입니다. 필요에 따라 Internet Gateway와 연결하여 인터넷 통신을 지원
+      - ACG vs Network ACL / 나올법해서 기억해두면 좋을듯
+        ![image-20211004103457826](https://raw.githubusercontent.com/redplug/shareimages/master/img/image-20211004103457826.png)
+      - VPC 간 내부통신은 VPC Peering를 통해 구성
+      - 사용 한도
+        ![image-20211004103559231](https://raw.githubusercontent.com/redplug/shareimages/master/img/image-20211004103559231.png)
 
     - ### 사용자 시나리오
 
@@ -996,27 +1118,51 @@
 
       - ### Deny-Allow Group 사용 가이드
 
+        - 현재 제공가능한 Deny-Allow Group의 수량은 최대 **4개/vpc** 입니다.
+        - Deny-Allow Group에 등록할 수 있는 IP의 수량은 최대 **100개/Group** 입니다.
+        - Deny-Allow Group내 IP는 중복등록 될 수 없습니다.
+
     - ### VPC 세부 구성 요소
 
       - ### VPC/Subnet
 
+        - VPC에 새로운 Subnet을 추가하려면 **VPC 주소 범위 내에서** Subnet의 주소 범위를 지정
+        -  Subnet은 인터넷과 연결되는 **Public Subnet**과 폐쇄적인 **Private Subnet**으로 구분
+      
       - ### NAT Gateway
+      
+        - NAT Gateway는 VPC 내부 네트워크 사용만 가능한 Private Subnet내의 자원에 인터넷 연결을 제공
+        - NAT Gateway는 각 Zone당 1개씩 생성 가능
 
       - ### VGW
-
+      
+        - Site to Site VPN
+        - Virtual Private Gateway(VGW)는 VPC와 IPsec VPN 또는 Cloud Connect를 연결하기 위한 접점
+      
       - ### Peering
-
+      
+        - VPC Peering은 단방향 통신만 가능하므로, TCP 등 양방향 통신이 요구되는 경우에는 요청 VPC와 수락 VPC를 맞바꾸어 2개를 생성 하셔야 합니다.
+      
       - ### Route Table
-
+      
+        - Route Table은 VPC내 자원의 네트워크 경로를 정의하여 트래픽 흐름을 제어
+      
       - ### Sub Account 권한 관리
 
   - ### Load Balancer
 
     - ### Load Balancer 개요
 
+      - Classic 플랫폼에서는 Classic Load Balancer를 제공하며, VPC 플랫폼에서는 Network Load Balancer / Application Load Balancer / Network Proxy Load Balancer 를 각각 제공함으로써 고객 서비스에 적합한 로드밸런서를 선택
+      - Network Load Balancer : TCP분산, DSR(Direct Server Return) 구조 가능
+      - Application Load Balancer : SSL 인증 암호화, HTTP, HTTPS
+      - Network Proxy Load Balancer : TCP 세션유지, SSL인증, DSR불가
+
     - ### 사용 가이드
 
       - ### Target Group
+
+        - Target Group은 하나 이상의 등록된 대상에 요청을 분배하는데 사용됩니다. 즉, 요청을 처리할 대상(서버)에 대한 집합이며, 이는 Load Balancer 서비스에서만 사용됩니다. Load Balancer의 리스너를 생성할 때 동작에 대한 Target Group을 지정하고, 조건에 따라 트래픽을 분배하게 됩니다.
 
       - ### Application Load Balancer
 
@@ -1034,7 +1180,24 @@
 
     - ### DNS 리소스 레코드 안내서
 
+      - 레코드 종류
+        - SOA : SOA 레코드는 해당 도메인(zone) 마다 반드시 기술되어야 하며 authority, 수정불가
+        - A : ipv4 맵핑
+        - AAAA : ipv6 맵핑
+        - NS : 네임서버
+        - PTR ; 역방향(IP) 맵핑
+        - CNAME : Alias
+        - MX : 메일서버
+        - SPF : 메일 보안관련(발송자) 확인용
+        - TXT : SPF, DKIM, 인증서 등록등에 활용
+        - SRV :  서비스의 위치(호스트네임 과 포트번호)를 저장하기 위해서 사용하는 레코드
+        - CAA :  도메인에 대한 인증서를 발급할 수 있는 CA (인증 기관)를 지정할 수 있도록 하는 DNS 레코드
+
     - ### Global DNS 사용 가이드
+
+      - 인터넷에서 사용하는 도메인 이름을 실제로 접속 가능한 주소로 식별해서 찾을 수 있게 하는 서비스
+      - 도메인 구매/등록은 타 등록기관에서 가능
+      - 타 기관에서 네임서버 등록하면 가능함
 
     - ### Sub Account 권한 관리
 
@@ -1042,9 +1205,26 @@
 
     - ### CDN+ 사용 가이드
 
+      - 국내 CDN 상품에 보다 안정적으로 다양한 기능을 제공하도록 개선된 CDN 플랫폼
+      - 대용량 콘텐츠 전송
+      - 다양한 원본 서버 지원
+      - 강력한 콘텐츠 전송 보안
+      - 네이버 클라우드 플랫폼의 타 상품과 연계 가능
+      - 용어 설명
+        ![image-20211004104908405](https://raw.githubusercontent.com/redplug/shareimages/master/img/image-20211004104908405.png)
+
   - ### Global CDN
 
     - ### Global CDN 사용 가이드
+
+      - Global CDN은 전 세계 거점에 위치한 캐시 서버를 통해 사용자에게 빠르고 안전하게 콘텐츠를 전송하는 서비스
+      - Global 콘텐츠 전송
+      - 다양한 원본 서버 지원
+      - 강력한 콘텐츠 전송 보안
+      - 고속 Purge 기능
+      - 국내 및 중국내 서비스에 대한 품질 보장하지 않음
+        - 국내는 CDN+ 사용
+        - 중국은 ICP(Internet Content Provider) License가 필요
 
   - ### IPsec VPN
 
@@ -1052,26 +1232,39 @@
 
       - ### IPsec VPN 개요
 
+        - VPN은 가상 사설망(Virtual Private Network)의 약자로, 외부에서 접근할 수 없는 사설망에 내 PC나 네트워크를 연결시키는 방법을 말합니다.
+        - 사설망과의 연결은 가상 터널을 통해 이루어지며, 이 가상 터널을 IPsec(Internet Protocol Security)으로 암호화하여 보호하는 것이 IPsec VPN입니다.
+      
       - ### Cisco
-
+      
       - ### Fortinet
-
+      
       - ### Juniper
-
+      
       - ### Paloalto
 
   - ### NAT Gateway
 
     - ### NAT Gateway 사용 가이드
 
+      - NAT는 네트워크 주소 변환(Network Address Translation)의 약자로, 비공인 네트워크에 속한 여러 개의 호스트가 하나의 공인 IP 주소를 사용하여 인터넷에 접속하는 방법
+      - 클라우드 플랫폼 내부에 있는 고객의 서버가 인터넷상의 고객의 호스트 혹은 고객과 연관이 있는 공인 IP 주소를 가진 호스트와 연결할 수 있도록 NAT 서비스를 제공하는 Gateway입
+
   - ### Global Route Manager
 
     - ### Global Route Manater 사용 가이드
+
+      - Global Route Manager는 DNS 기반의 다양한 방법을 통해 네트워크 트래픽을 안정적으로 로드밸런싱하는 GSLB(global server load balancing) 상품
+      - Global Route Manager는 DNS 기반에서 동작
+      - 로드밸런싱타입과 추가 가능한 리소스 정보
+        ![image-20211004105246961](https://raw.githubusercontent.com/redplug/shareimages/master/img/image-20211004105246961.png)
 
   - ### DNS
 
     - ### DNS 리소스 레코드 안내서
 
+      - 이버 클라우드 플랫폼 DNS의 리소스 레코드를 설명하고, 레코드 추가 절차와 주의 사항 등을 안내
+    
     - ### DNS 사용 가이드
 
   ## Media
@@ -1082,11 +1275,20 @@
 
     - ### Image Optimizer 사용 가이드
 
+      - mage Optimizer는 원본 이미지를 모바일, 태블릿, PC 등 다양한 기기의 해상도에 맞게 손쉽게 리사이징 할 수 있는 클라우드 기반의 실시간 이미지 변환 서비스
+
     - ### Query String 작성 가이드
+
+      - 섬네일 호출 URL은 상품 등록 당시의 [CDN 도메인] + [오브젝트 스토리지 내의 파일 경로] + [섬네일 생성 옵션]과 같이 3가지 영역으로 생성
+      - 형식: `https://{CDN-DOMAIN}/{FILE-PATH-IN-OBJSTORAGE}?{QUERYSTRINGS}`
 
   - ### Live Station
 
     - ### Live Station 사용 가이드
+
+      - Live Station은 실시간 라이브 방송 서비스 구축에 필요한 모든 기능을 제공하는 영상 인코딩 플랫폼
+      - Live Station을 통해 단일 RTMP(Real Time Messaging Protocol) 원본 스트림을 웹 인터페이스를 통하여 쉽고 빠르게 여러 개의 Multi-bitrate 출력 스트림을 만들어낼 수 있으며, 영상을 HLS(Http Live Streaming)로 패킷화(Packetizing)하여 전송
+      -  라이브 미디어 영상을 손쉽게 타 플랫폼으로 동시 송출 가능한 Re-Stream 기능도 제공
 
     - ### Channel Management
 
@@ -1114,6 +1316,21 @@
 
     - ### VOD Station 개요
 
+      - VOD Station은 저장된 영상을 다양한 디바이스에서 시청할 수 있도록 변환하는 인코딩 기능과 동영상 파일을 패킷타이징하여 네트워크를 효율적으로 사용할 수 있는 스트리밍 기능을 제공하는 VOD 전용 서비스
+      - 특징
+        - **하나의 상품으로 인코딩과 송출 가능**: 여러 가지 VOD 서비스 상품을 고민할 필요 없이 VOD Station 하나로 인코딩과 스트리밍이 가능합니다.
+        - **영상의 길이와 해상도에 따른 합리적 과금**: 영상의 길이와 코딩 후 변환된 해상도에 따라 요금이 책정되므로 합리적인 비용으로 서비스를 이용할 수 있습니다.
+        - **고품질의 안정적인 스트리밍**: Progressive Download 방식이 아닌 영상을 패킷타이징하여 송출하는 방식이므로 안정적인 품질로 스트리밍을 제공할 수 있습니다.
+        - **간편한 CDN 생성**: CDN(Content Delivery Network) 선택 옵션을 통해 VOD 스트리밍 서비스에 최적화된 CDN을 쉽게 생성할 수 있습니다.
+        - **상품 간의 유연한 연동**: 인코딩, 보안, 비디오 플레이어와의 연동 등 VOD 서비스에 필요한 상품 간의 유연한 연동성을 제공합니다.
+      - 기능
+        - **인코딩**: 고비용의 미디어 인코딩 인프라를 직접 구축하거나 운영할 필요 없이 클라우드 환경에서 손쉽게 파일의 포맷을 변경하거나 멀티스크린에 맞는 다양한 사이즈로 영상 변환 작업을 수행할 수 있습니다.
+        - **On-the-fly 패킷타이징**: 사용자가 VOD 스트리밍을 요청하면 Object Storage의 MP4 파일을 설정된 Segment Duration 단위로 패킷타이징을 진행합니다. 네트워크를 효율적으로 사용할 수 있으며, 서비스 부하에 대한 리스크를 차단합니다.
+        - **템플릿 인코딩 설정**: 자주 사용되는 옵션들을 모아 기본 인코딩 설정 목록으로 제공하여 복잡한 인코딩 옵션들을 설정할 필요 없이 목록에서 선택해 사용할 수 있습니다.
+        - **DRM**: VOD 스트리밍 패킷에 DRM을 적용하여 콘텐츠 보안을 강화할 수 있습니다. 파일 자체에 DRM을 적용하여 별도 관리하고 서비스하던 기존의 방법보다 빠르고 쉬우면서도 견고한 보안성을 제공합니다. 유료 콘텐츠 서비스에서의 불법 다운로드 리스크를 해소할 수 있습니다.
+        - **썸네일 추출**: 비디오 인코딩 작업을 수행하면서 원본 영상 파일로부터 고품질 썸네일 이미지를 추출할 수 있습니다. 추출한 썸네일을 인코딩한 출력 영상 파일과 별도로 다른 파일 스토리지 경로에 저장할 수 있으며, CDN과 연동하여 손쉽게 서비스에 활용할 수 있습니다.
+        - **최적의 CDN 생성(선택 옵션)**: 미디어 서비스의 품질을 위해 필요한 CDN을 설정하는 것은 매우 복잡하지만, VOD Station은 채널 설정 완료와 동시에 이에 맞는 최적의 CDN을 자동으로 설정하여 제공합니다.
+
     - ### VOD Station 사용 준비
 
     - ### VOD Station 시작
@@ -1128,6 +1345,33 @@
 
     - ### VOD Station 문제 해결
 
+      - 미디어 변환 관련
+        - **UPLOAD_ERROR**:
+          **원인**: 출력 Object Storage 버킷에 인코딩이 완료된 출력 비디오 파일 업로드 중 오류 발생
+          **해결 방법**: Object Storage의 버킷 목록에서 카테고리에 지정된 파일 경로에 출력 파일 폴더가 있는지 확인하거나 새로고침을 실행한 후 다시 시도해 주십시오.
+        - **DOWNLOAD_ERROR**:
+          **원인**: 인코딩 진행 중 Object Storage에서 원본 비디오 파일이 변경되거나 삭제됨
+          **해결 방법**: Object Storage의 해당 경로에서 원본 파일이 있는지 확인하고, 필요한 경우 다시 업로드한 후 진행해 주십시오.
+        - **FILE_NOT_FOUND**:
+          **원인**: 선택한 원본 비디오 파일이 Object Storage 내에 존재하지 않음
+          **해결 방법**: Object Storage의 해당 경로에 원본 파일이 있는지 확인해 주십시오. 원본 파일을 다시 업로드하거나 다른 파일을 선택한 후 진행해 주십시오.
+        - **FILE_ALREADY_EXISTS**:
+          **원인**: 같은 이름의 출력 비디오 파일이 출력 Object Storage 내에 존재함
+          **해결 방법**: 출력 Object Storage 버킷에서 같은 이름을 가진 파일의 이름을 변경해 주십시오.
+        - **WRONG_INPUT_FILE**:
+          **원인**: 지원하지 않는 형식의 원본 비디오 파일 사용
+          **해결 방법**: VOD Station이 지원하는 형식의 비디오 파일을 사용해 주십시오. 지원되는 파일 사양은 [서비스 사양](https://guide.ncloud-docs.com/docs/vodstation-vodstationprep#서비스사양)을 참고해 주십시오.
+        - **TRANSCODING_ERROR**:
+          **원인**: 원본 비디오 파일 속성이 일반적이지 않아 변환할 수 없음
+          **해결 방법**:
+          - 원본 비디오 파일 헤더를 추출할 수 없거나 재생 시간(Duration)이 정상적이지 않은 경우일 수 있습니다. mediainfo와 같은 비디오 파일 속성을 확인할 수 있는 프로그램을 이용하여 VOD Station이 지원하는 비디오 또는 오디오 형식인지, 헤더의 재생 시간과 비디오/오디오 재생 시간이 동일한지 확인해 주십시오. 지원되는 파일 사양은 [서비스 사양](https://guide.ncloud-docs.com/docs/vodstation-vodstationprep#서비스사양)을 참고해 주십시오.
+          - 원인 확인이 어렵다면 네이버 클라우드 플랫폼 포털의 고객 문의 기능을 이용해 문의해 주십시오.
+      - VOD 스트리밍 관련
+        - 다음은 VOD 스트리밍과 관련해 발생할 수 있는 오류 메시지입니다.
+          - **URL 생성 호출이 실패하였습니다.**
+            **원인**: Object Storage의 버킷에서 파일이 유실되거나 오류 발생
+            **해결 방법**: Object Storage의 버킷 목록에서 해당 위치에 파일이 있는지 확인하거나 새로고침을 실행한 후 다시 시도해 주십시오
+
     - ### VOD Station 권한 관리
 
     - ### VOD Station 릴리즈 노트
@@ -1136,10 +1380,12 @@
 
     - ### Video Player 콘솔 사용 가이드
 
+      - 이버 클라우드 플랫폼의 비디오 플레이어는 최신의 네이버 미디어 플레이어를 기반으로 개발된 클라우드 전용 상품
+
     - ### Video Player 사용 가이드
 
     - ### Video Player Demo 가이드
-
+    
     - ### Sub Account 권한 관리
 
   ------
